@@ -19,25 +19,23 @@ logger = logging.getLogger('itchat')
 
 emojiRegex = re.compile(r'<span class="emoji emoji(.{1,10})"></span>')
 htmlParser = HTMLParser()
-try:
-    b = u'\u2588'
-    sys.stdout.write(b + '\r')
-    sys.stdout.flush()
-except IOError:
-    class dummyStream:
-        ''' dummyStream behaves like a stream but does nothing. '''
-
-        def __init__(self): pass
-
-        def write(self, data): pass
-
-        def read(self, data): pass
-
-        def flush(self): pass
-
-        def close(self): pass
 
 
+class dummyStream:
+    ''' dummyStream behaves like a stream but does nothing. '''
+
+    def __init__(self): pass
+
+    def write(self, data): pass
+
+    def read(self, data): pass
+
+    def flush(self): pass
+
+    def close(self): pass
+
+
+if not sys.stdout:
     # and now redirect all default streams to this dummyStream:
     sys.stdout = dummyStream()
     sys.stderr = dummyStream()
@@ -45,6 +43,11 @@ except IOError:
     sys.__stdout__ = dummyStream()
     sys.__stderr__ = dummyStream()
     sys.__stdin__ = dummyStream()
+
+try:
+    b = u'\u2588'
+    sys.stdout.write(b + '\r')
+    sys.stdout.flush()
 except UnicodeEncodeError:
     BLOCK = 'MM'
 else:
